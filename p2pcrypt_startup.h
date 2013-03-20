@@ -21,7 +21,8 @@ public:
 
 signals:
     
-public slots:
+private slots:
+    void showGenerateIdentity();
 
 private:
     QFrame * startup_frame;

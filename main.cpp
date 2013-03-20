@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
      *************************/
 
     //Render only the boot screen at startup
-    startup->showBootScreen();
+   //startup->showBootScreen();
 
     return a.exec();
 }
