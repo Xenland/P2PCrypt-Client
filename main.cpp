@@ -9,6 +9,8 @@
 
 #include "p2pcrypt_startup.h"
 
+/** Global variables **/
+QString current_version;
 
 int main(int argc, char *argv[])
 {
@@ -17,6 +19,7 @@ int main(int argc, char *argv[])
 
 
     //Define Main() Variables
+    current_version = QString("Dev Build v0.0.3");
     QHBoxLayout * main_window_layout = new QHBoxLayout;
     QFrame * boot_frame = new QFrame;
 
@@ -29,22 +32,32 @@ int main(int argc, char *argv[])
     //QT requires a qwidget centeral window or no windows will show so we use the main window as a place holder.
     QWidget main_window;
     main_window.setLayout(main_window_layout);
-    main_window.setWindowTitle("P2P Crypt Client");
+    main_window.setWindowTitle("P2P Crypt Client | "+current_version);
     main_window.setMinimumSize(400, 200);
     main_window.resize(400,200);
     main_window.show();
 
 
-    //Program just started, Display the boot window
-    main_window_layout->addWidget(boot_frame);
+    /** Define the boot/startup frame **/
     boot_frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    //Test
     p2pcrypt_startup * startup = new p2pcrypt_startup();
     startup->setBootFrame(*boot_frame);
     startup->loadBootScreen();
 
-    //We want the boot screen to be the start up screen.
+        //Add boot/startup frame to the main window.
+        main_window_layout->addWidget(boot_frame);
+
+
+
+    /** Define the "Account Unlocked" frame **/
+        //TO DO HERE...........
+
+
+    /*************************
+     *  END P2P Crypt Logic  *
+     *************************/
+
+    //Render only the boot screen at startup
     startup->showBootScreen();
 
     return a.exec();
