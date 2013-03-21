@@ -7,6 +7,10 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QMovie>
+#include <QLabel>
 
 class p2pcrypt_startup : public QObject
 {
@@ -26,6 +30,18 @@ private slots:
 
 private:
     QFrame * startup_frame;
+
+        QWidget * main_boot_widget;
+        QWidget * generate_identity_widget;
+
+        /*Generate Identity Global Private*/
+        QWidget * generate_identity_movie_contents;
+        QLabel * generate_identity_movie_label;
+        QMovie * generate_identity_movie;
+
+
+
+   void hideAllBootScreens();
 };
 
 #endif // P2PCRYPT_STARTUP_H

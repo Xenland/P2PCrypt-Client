@@ -44,7 +44,7 @@ void p2pcrypt_startup::loadBootScreen(){
 
 
     //Create "main_boot_widget" which holds the content for "main_boot_layout"
-    QWidget * main_boot_widget = new QWidget;
+    main_boot_widget = new QWidget;
     main_boot_widget->hide();
 
         //Add this main boot widget to the main boot layout
@@ -57,32 +57,33 @@ void p2pcrypt_startup::loadBootScreen(){
             main_boot_widget->setLayout(main_boot_layout_contents);
 
         //Begin adding objects to the main_boot_layout_contents
-        QLabel * boot_screen_instructions = new QLabel("<span style='text-align:center;font-size:15pt'>P2P Crypt</span>");
-        boot_screen_instructions->setAlignment(Qt::AlignHCenter);
-        boot_screen_instructions->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        main_boot_layout_contents->addWidget(boot_screen_instructions, 0, 0);
+            //Instructions/Logo Text
+            QLabel * boot_screen_instructions = new QLabel("<span style='text-align:center;font-size:15pt'>P2P Crypt</span>");
+            boot_screen_instructions->setAlignment(Qt::AlignHCenter);
+            boot_screen_instructions->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            main_boot_layout_contents->addWidget(boot_screen_instructions, 0, 0);
 
-        //Add a "Generate Identity" button that will triger a menu to open
-        QPushButton * generate_identity_btn = new QPushButton("Generate Identity");
-        generate_identity_btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        main_boot_layout_contents->addWidget(generate_identity_btn, 1, 0);
+            //Add a "Generate Identity" button that will triger a menu to open
+            QPushButton * generate_identity_btn = new QPushButton("Generate Identity");
+            generate_identity_btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            main_boot_layout_contents->addWidget(generate_identity_btn, 1, 0);
 
-            //Add slot to catch the Generate Identity btn click
-            connect(generate_identity_btn, SIGNAL(clicked()), SLOT(showGenerateIdentity()));
+                //Add slot to catch the Generate Identity btn click
+                connect(generate_identity_btn, SIGNAL(clicked()), SLOT(showGenerateIdentity()));
 
-        //Add a "Load Identity" button that will trigger a menu to open
-        QPushButton * load_identity_btn = new QPushButton("Load Identity");
-        load_identity_btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        main_boot_layout_contents->addWidget(load_identity_btn, 2, 0);
+            //Add a "Load Identity" button that will trigger a menu to open
+            QPushButton * load_identity_btn = new QPushButton("Load Identity");
+            load_identity_btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            main_boot_layout_contents->addWidget(load_identity_btn, 2, 0);
 
 
 
     //Create "generate_identity_widget" which holds the content for "generate_identity_layout"
-    QWidget * generate_identity_widget = new QWidget;
+    generate_identity_widget = new QWidget;
     generate_identity_widget->hide();
 
         //Add this generate identity widget to the main boot layout
-        main_boot_layout->addWidget(generate_identity_widget);
+        generate_identity_layout->addWidget(generate_identity_widget);
 
         //Create layout to hold "multiple QT objects to store in the generate_identity_widget
         QVBoxLayout * generate_identity_layout_contents = new QVBoxLayout;
@@ -90,6 +91,45 @@ void p2pcrypt_startup::loadBootScreen(){
             //Attach this laytout the the "generate_identity_widget"
             generate_identity_widget->setLayout(generate_identity_layout_contents);
 
+        //Begin adding objects to the generate_identity_layout_contents
+            //Instructions on how to generate an identity
+            QLabel * generate_identity_instructions = new QLabel("<p>Select the algo most feasable for your situation or if you are unsure just use the most secure solution which is set by default.</p>");
+            generate_identity_instructions->setAlignment(Qt::AlignHCenter);
+            generate_identity_instructions->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            generate_identity_instructions->setWordWrap(1);
+            generate_identity_layout_contents->addWidget(generate_identity_instructions, 0, 0);
+
+            //Lists of algos for generating an identity
+            QComboBox * identity_pick_algo = new QComboBox;
+            identity_pick_algo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+                //Add data to combo box
+                identity_pick_algo->addItem("RSA");
+                identity_pick_algo->addItem("ECC (Most Secure)");
+                identity_pick_algo->addItem("AES (Fastest)");
+
+            generate_identity_layout_contents->addWidget(identity_pick_algo);
+
+            //Create a loading bar to show the program hasen't froze.
+
+
+            //Create button to initiate the generation of an address
+            QPushButton * identity_generate_btn = new QPushButton("Generate New Identity");
+            identity_generate_btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            generate_identity_layout_contents->addWidget(identity_generate_btn);
+
+                //Add slot to catch the "identity generate button" click
+                    //Initiate Generation of Identity
+
+
+
+}
+
+void p2pcrypt_startup::hideAllBootScreens(){
+    qDebug() << "Hide all boot screens";
+
+    main_boot_widget->hide();
+    generate_identity_widget->hide();
 }
 
 /**
@@ -98,7 +138,11 @@ void p2pcrypt_startup::loadBootScreen(){
 void p2pcrypt_startup::showBootScreen(){
     qDebug() << "Showing boot screen.";
 
+    //Display startup_frame
     startup_frame->show();
+
+        //Display boot screen from startup frame
+        main_boot_widget->show();
 }
 
 
@@ -106,6 +150,10 @@ void p2pcrypt_startup::showBootScreen(){
  * @brief showGenerateIdentity
  **/
  void p2pcrypt_startup::showGenerateIdentity(){
-     qDebug() << "Showing generate identity page";
+     hideAllBootScreens();
 
+    qDebug() << "Showing generate identity page";
+
+    //Show generate identity screen
+    generate_identity_widget->show();
  }
