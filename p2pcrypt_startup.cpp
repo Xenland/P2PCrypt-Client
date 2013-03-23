@@ -24,6 +24,8 @@ void p2pcrypt_startup::setBootFrame(QFrame &boot_frame){
  * @brief p2pcrypt_startup::loadBootScreen
  */
 void p2pcrypt_startup::loadBootScreen(){
+    //Define Variables
+    generating_identity = 0;
 
     //Create a grid object for the "Boot Screen"
     QGridLayout * boot_grid = new QGridLayout(startup_frame);
@@ -120,9 +122,7 @@ void p2pcrypt_startup::loadBootScreen(){
 
                 //Add slot to catch the "identity generate button" click
                     //Initiate Generation of Identity
-
-
-
+                     connect(identity_generate_btn, SIGNAL(clicked()), SLOT(generate_new_identity()));
 }
 
 void p2pcrypt_startup::hideAllBootScreens(){
@@ -157,3 +157,14 @@ void p2pcrypt_startup::showBootScreen(){
     //Show generate identity screen
     generate_identity_widget->show();
  }
+
+
+/**
+* @brief p2pcrypt_startup::generate_new_identity
+*/
+void p2pcrypt_startup::generate_new_identity(){
+    qDebug() << "Generating";
+
+    p2pcrypt_algo * generate_identity;
+    QFuture<void> future = QtConcurrent::run(generate_identity, &p2pcrypt_algo::testFunc);
+}

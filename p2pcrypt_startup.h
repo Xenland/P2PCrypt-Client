@@ -11,6 +11,14 @@
 #include <QSpinBox>
 #include <QMovie>
 #include <QLabel>
+#include <QThread>
+#include <QtCore>
+#include <QFuture>
+#include <QtConcurrentRun>
+
+#include "p2pcrypt_startup.h"
+#include "p2pcrypt_algo.h"
+
 
 class p2pcrypt_startup : public QObject
 {
@@ -27,19 +35,17 @@ signals:
     
 private slots:
     void showGenerateIdentity();
+    void generate_new_identity();
 
 private:
+
+    /* General GUI Variables */
     QFrame * startup_frame;
 
         QWidget * main_boot_widget;
         QWidget * generate_identity_widget;
 
-        /*Generate Identity Global Private*/
-        QWidget * generate_identity_movie_contents;
-        QLabel * generate_identity_movie_label;
-        QMovie * generate_identity_movie;
-
-
+        int generating_identity;
 
    void hideAllBootScreens();
 };

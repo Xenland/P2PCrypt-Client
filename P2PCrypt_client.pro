@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,7 +13,9 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    p2pcrypt_startup.cpp
+    p2pcrypt_startup.cpp \
+    p2pcrypt_algo.cpp
 
 HEADERS  += \
-    p2pcrypt_startup.h
+    p2pcrypt_startup.h \
+    p2pcrypt_algo.h
