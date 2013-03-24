@@ -9,6 +9,7 @@
 
 #include "p2pcrypt_startup.h"
 #include "p2pcrypt_algo.h"
+#include "p2pcrypt_sql.h"
 
 /** Global variables **/
 QString current_version;
