@@ -23,6 +23,8 @@ public:
     void generateNewIdentity(QString identity_algo_type, int keybit);
 
 private:
+    QString * last_generated_identity_sql_id;
+
     QString * generated_public_key;
     QString * generated_private_key;
 

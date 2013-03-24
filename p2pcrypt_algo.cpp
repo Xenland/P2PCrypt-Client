@@ -3,8 +3,9 @@
 p2pcrypt_algo::p2pcrypt_algo(QObject *parent) :
     QObject(parent)
 {
-
 }
+
+
 
 
 void p2pcrypt_algo::generateNewIdentity(QString identity_algo_type, int keybit){
@@ -54,7 +55,24 @@ void p2pcrypt_algo::generateNewIdentity(QString identity_algo_type, int keybit){
         p2pcrypt_sql identity_ring;
         identity_ring.connectToDatabase("identity_keyring.sqlite3");
         if(identity_ring.database_handle.open()){
-            qDebug() << "Successfully Opened!";
+            qDebug() << "OPENED";
+            //Attempt to insert newly generated identity into the SQLite3 database.
+            QSqlQuery * append_identity = new QSqlQuery(identity_ring.database_handle);
+            append_identity->prepare("INSERT INTO `local_identities` (`public_key`, `private_key`) VALUES(:public_key, :private_key)");
+            append_identity->bindValue(":public_key", pub_key);
+            append_identity->bindValue(":private_key", pri_key);
+            append_identity->exec();
+
+            //Attempt to get the last sql insert id
+            QSqlQuery * get_last_id = new QSqlQuery("SELECT last_insert_rowid();", identity_ring.database_handle);
+            while(get_last_id->next()){
+                qDebug() << "Next";
+                //Set last insert id
+                QString tmp_id = get_last_id->value(0).toString();
+                qDebug() << "next1";
+                last_generated_identity_sql_id = &tmp_id;
+                qDebug() << "INSERTED AT " << tmp_id;
+            }
         }else{
             qDebug() << "Failed to open";
         }
