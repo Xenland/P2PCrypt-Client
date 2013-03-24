@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent
+QT       += core gui concurrent network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -19,3 +19,6 @@ SOURCES += main.cpp \
 HEADERS  += \
     p2pcrypt_startup.h \
     p2pcrypt_algo.h
+
+LIBS += -lssl
+LIBS += -lcrypto

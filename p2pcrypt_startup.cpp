@@ -165,6 +165,9 @@ void p2pcrypt_startup::generate_new_identity(){
     int currently_selected_algo_type = identity_pick_algo->currentIndex();
     QString algo_type;
 
+    //Static keybit (for now)
+    int keybit = 2048;
+
     if(currently_selected_algo_type == 0){
         algo_type = "RSA";
     }else if(currently_selected_algo_type == 1){
@@ -177,5 +180,5 @@ void p2pcrypt_startup::generate_new_identity(){
     }
 
     p2pcrypt_algo * generate_identity_object;
-    QFuture<void> generate_identity_future = QtConcurrent::run(generate_identity_object, &p2pcrypt_algo::generateNewIdentity, algo_type);
+    QFuture<void> generate_identity_future = QtConcurrent::run(generate_identity_object, &p2pcrypt_algo::generateNewIdentity, algo_type, keybit);
 }
