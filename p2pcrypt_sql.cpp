@@ -7,5 +7,8 @@ p2pcrypt_sql::p2pcrypt_sql(QObject *parent) :
 
 void p2pcrypt_sql::connectToDatabase(QString sql_filename){
     database_handle = QSqlDatabase::addDatabase("QSQLITE");
-    database_handle.setDatabaseName("./db/"+sql_filename);
+
+    QString sql_dir =  QCoreApplication::applicationDirPath() + QDir::separator()+"db" + QDir::separator() + sql_filename;
+    qDebug() << sql_dir;
+    database_handle.setDatabaseName(sql_dir);
 }

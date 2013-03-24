@@ -51,6 +51,13 @@ void p2pcrypt_algo::generateNewIdentity(QString identity_algo_type, int keybit){
         /* SQL
          *Add newly generated keypair to the DB and return the integer of the newly inserted id #
          */
+        p2pcrypt_sql identity_ring;
+        identity_ring.connectToDatabase("identity_keyring.sqlite3");
+        if(identity_ring.database_handle.open()){
+            qDebug() << "Successfully Opened!";
+        }else{
+            qDebug() << "Failed to open";
+        }
 
     }
 }

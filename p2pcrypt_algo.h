@@ -11,6 +11,9 @@
 #include <openssl/evp.h>
 #include <openssl/rsa.h>
 
+//p2pcrypt
+#include "p2pcrypt_sql.h"
+
 
 class p2pcrypt_algo : public QObject
 {
