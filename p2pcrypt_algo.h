@@ -20,6 +20,8 @@ public:
     void generateNewIdentity(QString identity_algo_type, int keybit);
 
 private:
+    QString * generated_public_key;
+    QString * generated_private_key;
 
 signals:
     

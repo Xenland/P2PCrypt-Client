@@ -84,7 +84,7 @@ void p2pcrypt_startup::loadBootScreen(){
     generate_identity_widget = new QWidget;
     generate_identity_widget->hide();
 
-        //Add this generate identity widget to the main boot layout
+        //Add this generate identity widget to the generate identity layout
         generate_identity_layout->addWidget(generate_identity_widget);
 
         //Create layout to hold "multiple QT objects to store in the generate_identity_widget
@@ -129,7 +129,7 @@ void p2pcrypt_startup::loadBootScreen(){
     generating_identity_working_widget = new QWidget;
     generating_identity_working_widget->hide();
 
-        //Add this "generating identity is working" widget to the main boot layout
+        //Add this "generating identity is working" widget to the generate identity layout
         generate_identity_layout->addWidget(generating_identity_working_widget);
 
         //Create layout to hold "multiple QT objects to store in the generate_identity_widget
@@ -141,7 +141,27 @@ void p2pcrypt_startup::loadBootScreen(){
         //Begin adding objects to the generating_identity_layout_contents
             //Add text alerting the user that we are generating an identity
             QLabel * generating_identity_label = new QLabel("Generating an identity");
+            generating_identity_label->setAlignment(Qt::AlignHCenter);
             generating_identity_layout_contents->addWidget(generating_identity_label);
+
+    /*Create a "finished generating identity" window to show the user/operator the details on the identity just created
+      aswell as display a "Finished" button*/
+    generating_identity_finished_widget = new QWidget;
+    generating_identity_finished_widget->hide();
+
+        //Add this "generating_identity_finished" widget to the generate identity layout
+        generate_identity_layout->addWidget(generating_identity_finished_widget);
+
+        //Create layout to hold "multiple QT objects to store in the generate_identity_widget
+        QVBoxLayout * generating_identity_finished_layout_contents = new QVBoxLayout;
+
+            //Attach this layout the the "generating_identity_working_widget"
+            generating_identity_finished_widget->setLayout(generating_identity_finished_layout_contents);
+
+        //Begin adding objects to the generating_identity_finished_layout_contents
+            //Add text about keypair information
+            generating_identity_finished_information_label = new QLabel("");
+            generating_identity_finished_layout_contents->addWidget(generating_identity_finished_information_label);
 }
 
 void p2pcrypt_startup::hideAllBootScreens(){
@@ -149,6 +169,7 @@ void p2pcrypt_startup::hideAllBootScreens(){
 
     main_boot_widget->hide();
     generate_identity_widget->hide();
+    generating_identity_working_widget->hide();
 }
 
 /**
@@ -184,8 +205,10 @@ void p2pcrypt_startup::showBootScreen(){
 void p2pcrypt_startup::generate_new_identity(){
     qDebug() << "Generating";
 
-    //Display "working" screen to signify we are generating a new identity window
+    //Hide all screens
     hideAllBootScreens();
+
+    //Display "working" screen to signify we are generating a new identity window
     generating_identity_working_widget->show();
 
     //Check what the combo/dropdown box is currently selected as
@@ -213,5 +236,9 @@ void p2pcrypt_startup::generate_new_identity(){
 void p2pcrypt_startup::showGenerateIdentityFinished(){
     qDebug() << "generate identity finished";
 
+    //Hide all screens
+    hideAllBootScreens();
+
+    //Display information on the identity just created
 
 }

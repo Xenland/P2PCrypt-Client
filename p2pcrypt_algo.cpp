@@ -48,9 +48,9 @@ void p2pcrypt_algo::generateNewIdentity(QString identity_algo_type, int keybit){
             pri_key[pri_len] = '\0';
             pub_key[pub_len] = '\0';
 
-            for(int i = 0; i < 10; i++){
-                qDebug() << i;
-                sleep(1);
-            }
+        /* SQL
+         *Add newly generated keypair to the DB and return the integer of the newly inserted id #
+         */
+
     }
 }

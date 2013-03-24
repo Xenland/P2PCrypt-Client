@@ -56,6 +56,8 @@ private:
             QComboBox * identity_pick_algo;
 
         QWidget * generating_identity_working_widget;
+        QWidget * generating_identity_finished_widget;
+            QLabel * generating_identity_finished_information_label;
 
    /* General GUI Functions */
    void hideAllBootScreens();
