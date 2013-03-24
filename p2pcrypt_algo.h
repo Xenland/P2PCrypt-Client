@@ -11,7 +11,7 @@ class p2pcrypt_algo : public QObject
     Q_OBJECT
 public:
     explicit p2pcrypt_algo(QObject *parent = 0);
-    void testFunc();
+    void generateNewIdentity(QString identity_algo_type);
 
 private:
 

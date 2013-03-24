@@ -44,8 +44,7 @@ private:
 
         QWidget * main_boot_widget;
         QWidget * generate_identity_widget;
-
-        int generating_identity;
+            QComboBox * identity_pick_algo;
 
    void hideAllBootScreens();
 };

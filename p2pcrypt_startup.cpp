@@ -24,8 +24,6 @@ void p2pcrypt_startup::setBootFrame(QFrame &boot_frame){
  * @brief p2pcrypt_startup::loadBootScreen
  */
 void p2pcrypt_startup::loadBootScreen(){
-    //Define Variables
-    generating_identity = 0;
 
     //Create a grid object for the "Boot Screen"
     QGridLayout * boot_grid = new QGridLayout(startup_frame);
@@ -102,17 +100,15 @@ void p2pcrypt_startup::loadBootScreen(){
             generate_identity_layout_contents->addWidget(generate_identity_instructions, 0, 0);
 
             //Lists of algos for generating an identity
-            QComboBox * identity_pick_algo = new QComboBox;
+            identity_pick_algo = new QComboBox;
             identity_pick_algo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
                 //Add data to combo box
                 identity_pick_algo->addItem("RSA");
-                identity_pick_algo->addItem("ECC (Most Secure)");
-                identity_pick_algo->addItem("AES (Fastest)");
+                identity_pick_algo->addItem("Elliptical Curve");
+                identity_pick_algo->addItem("AES (Not recommended)");
 
             generate_identity_layout_contents->addWidget(identity_pick_algo);
-
-            //Create a loading bar to show the program hasen't froze.
 
 
             //Create button to initiate the generation of an address
@@ -165,6 +161,21 @@ void p2pcrypt_startup::showBootScreen(){
 void p2pcrypt_startup::generate_new_identity(){
     qDebug() << "Generating";
 
-    p2pcrypt_algo * generate_identity;
-    QFuture<void> future = QtConcurrent::run(generate_identity, &p2pcrypt_algo::testFunc);
+    //Check what the combo/dropdown box is currently selected as
+    int currently_selected_algo_type = identity_pick_algo->currentIndex();
+    QString algo_type;
+
+    if(currently_selected_algo_type == 0){
+        algo_type = "RSA";
+    }else if(currently_selected_algo_type == 1){
+        algo_type = "ECC";
+    }else if(currently_selected_algo_type == 2){
+        algo_type = "AES";
+    }else{
+        //if none selected (somehow) default to RSA
+        algo_type = "RSA";
+    }
+
+    p2pcrypt_algo * generate_identity_object;
+    QFuture<void> generate_identity_future = QtConcurrent::run(generate_identity_object, &p2pcrypt_algo::generateNewIdentity, algo_type);
 }
