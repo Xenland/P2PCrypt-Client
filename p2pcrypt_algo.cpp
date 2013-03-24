@@ -3,8 +3,7 @@
 p2pcrypt_algo::p2pcrypt_algo(QObject *parent) :
     QObject(parent)
 {
-    //Define generating status
-    generating_status = 0;
+
 }
 
 
@@ -21,8 +20,6 @@ void p2pcrypt_algo::generateNewIdentity(QString identity_algo_type, int keybit){
             }
 
         //Begin generation logic
-            //Flag generating status
-            generating_status = 1;
 
         //Generate RSA key pair
         RSA *keypair = RSA_generate_key(keybit, 37, NULL, NULL);
@@ -55,9 +52,5 @@ void p2pcrypt_algo::generateNewIdentity(QString identity_algo_type, int keybit){
                 qDebug() << i;
                 sleep(1);
             }
-
-        //Flag generating finished
-            generating_status = 2;
-
     }
 }

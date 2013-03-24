@@ -7,6 +7,8 @@ p2pcrypt_startup::p2pcrypt_startup(QObject *parent) :
     QObject(parent)
 {
     qDebug() << "startup\n";
+
+    connect(&generate_identity_future_watcher, SIGNAL(finished()), SLOT(showGenerateIdentityFinished()));
 }
 
 
@@ -135,6 +137,11 @@ void p2pcrypt_startup::loadBootScreen(){
 
             //Attach this laytout the the "generating_identity_working_widget"
             generating_identity_working_widget->setLayout(generating_identity_layout_contents);
+
+        //Begin adding objects to the generating_identity_layout_contents
+            //Add text alerting the user that we are generating an identity
+            QLabel * generating_identity_label = new QLabel("Generating an identity");
+            generating_identity_layout_contents->addWidget(generating_identity_label);
 }
 
 void p2pcrypt_startup::hideAllBootScreens(){
@@ -162,7 +169,7 @@ void p2pcrypt_startup::showBootScreen(){
  * @brief showGenerateIdentity
  **/
  void p2pcrypt_startup::showGenerateIdentity(){
-     hideAllBootScreens();
+    hideAllBootScreens();
 
     qDebug() << "Showing generate identity page";
 
@@ -172,8 +179,8 @@ void p2pcrypt_startup::showBootScreen(){
 
 
 /**
-* @brief p2pcrypt_startup::generate_new_identity
-*/
+ * @brief p2pcrypt_startup::generate_new_identity
+ */
 void p2pcrypt_startup::generate_new_identity(){
     qDebug() << "Generating";
 
@@ -199,5 +206,12 @@ void p2pcrypt_startup::generate_new_identity(){
         algo_type = "RSA";
     }
 
-    QFuture<void> generate_identity_future = QtConcurrent::run(generate_identity_object, &p2pcrypt_algo::generateNewIdentity, algo_type, keybit);
+    generate_identity_future = QtConcurrent::run(generate_identity_object, &p2pcrypt_algo::generateNewIdentity, algo_type, keybit);
+    generate_identity_future_watcher.setFuture(generate_identity_future);
+}
+
+void p2pcrypt_startup::showGenerateIdentityFinished(){
+    qDebug() << "generate identity finished";
+
+
 }
