@@ -20,7 +20,7 @@ public:
     void generateNewIdentity(QString identity_algo_type, int keybit);
 
 private:
-
+    int generating_status;
 
 signals:
     

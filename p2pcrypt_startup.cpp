@@ -118,7 +118,23 @@ void p2pcrypt_startup::loadBootScreen(){
 
                 //Add slot to catch the "identity generate button" click
                     //Initiate Generation of Identity
-                     connect(identity_generate_btn, SIGNAL(clicked()), SLOT(generate_new_identity()));
+                    connect(identity_generate_btn, SIGNAL(clicked()), SLOT(generate_new_identity()));
+
+
+
+
+    //Create a "generating identity" working window to show that the program is "doing something"
+    generating_identity_working_widget = new QWidget;
+    generating_identity_working_widget->hide();
+
+        //Add this "generating identity is working" widget to the main boot layout
+        generate_identity_layout->addWidget(generating_identity_working_widget);
+
+        //Create layout to hold "multiple QT objects to store in the generate_identity_widget
+        QVBoxLayout * generating_identity_layout_contents = new QVBoxLayout;
+
+            //Attach this laytout the the "generating_identity_working_widget"
+            generating_identity_working_widget->setLayout(generating_identity_layout_contents);
 }
 
 void p2pcrypt_startup::hideAllBootScreens(){
@@ -161,6 +177,10 @@ void p2pcrypt_startup::showBootScreen(){
 void p2pcrypt_startup::generate_new_identity(){
     qDebug() << "Generating";
 
+    //Display "working" screen to signify we are generating a new identity window
+    hideAllBootScreens();
+    generating_identity_working_widget->show();
+
     //Check what the combo/dropdown box is currently selected as
     int currently_selected_algo_type = identity_pick_algo->currentIndex();
     QString algo_type;
@@ -179,6 +199,5 @@ void p2pcrypt_startup::generate_new_identity(){
         algo_type = "RSA";
     }
 
-    p2pcrypt_algo * generate_identity_object;
     QFuture<void> generate_identity_future = QtConcurrent::run(generate_identity_object, &p2pcrypt_algo::generateNewIdentity, algo_type, keybit);
 }

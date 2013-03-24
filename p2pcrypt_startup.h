@@ -38,6 +38,7 @@ private slots:
     void generate_new_identity();
 
 private:
+    p2pcrypt_algo * generate_identity_object;
 
     /* General GUI Variables */
     QFrame * startup_frame;
@@ -45,6 +46,8 @@ private:
         QWidget * main_boot_widget;
         QWidget * generate_identity_widget;
             QComboBox * identity_pick_algo;
+
+        QWidget * generating_identity_working_widget;
 
    void hideAllBootScreens();
 };
