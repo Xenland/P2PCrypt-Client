@@ -39,7 +39,6 @@ int main(int argc, char *argv[])
     main_window.resize(400,200);
     main_window.show();
 
-
     /** Define the boot/startup frame **/
     boot_frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     p2pcrypt_startup * startup = new p2pcrypt_startup();
@@ -48,8 +47,6 @@ int main(int argc, char *argv[])
 
         //Add boot/startup frame to the main window.
         main_window_layout->addWidget(boot_frame);
-
-
 
     /** Define the "Account Unlocked" frame **/
         //TO DO HERE...........

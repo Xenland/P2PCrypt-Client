@@ -229,10 +229,22 @@ void p2pcrypt_startup::generate_new_identity(){
         algo_type = "RSA";
     }
 
-    generate_identity_future = QtConcurrent::run(generate_identity_object, &p2pcrypt_algo::generateNewIdentity, algo_type, keybit);
+    generate_identity_future = QtConcurrent::run(this, &p2pcrypt_startup::generateNewIdentityThread, algo_type, keybit);
     generate_identity_future_watcher.setFuture(generate_identity_future);
 }
 
+
+void p2pcrypt_startup::generateNewIdentityThread(QString algo_type, int keybit){
+    qDebug() << "THREADING";
+    qDebug() << algo_type;
+    qDebug() << keybit;
+    qDebug() <<"Done THREADING";
+}
+
+
+/**
+ * @brief p2pcrypt_startup::showGenerateIdentityFinished
+ */
 void p2pcrypt_startup::showGenerateIdentityFinished(){
     qDebug() << "generate identity finished";
 
@@ -240,5 +252,5 @@ void p2pcrypt_startup::showGenerateIdentityFinished(){
     hideAllBootScreens();
 
     //Display information on the identity just created
-
+    qDebug() << "showgenerate identity finished";
 }

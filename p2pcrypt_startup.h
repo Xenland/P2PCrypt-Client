@@ -41,6 +41,7 @@ private slots:
     void showGenerateIdentityFinished();
 
     /* Backend Slots */
+    void generateNewIdentityThread(QString algo_type, int keybit);
     void generate_new_identity();
 
 private:

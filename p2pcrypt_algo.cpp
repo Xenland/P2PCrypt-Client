@@ -61,17 +61,17 @@ void p2pcrypt_algo::generateNewIdentity(QString identity_algo_type, int keybit){
             append_identity->prepare("INSERT INTO `local_identities` (`public_key`, `private_key`) VALUES(:public_key, :private_key)");
             append_identity->bindValue(":public_key", pub_key);
             append_identity->bindValue(":private_key", pri_key);
-            append_identity->exec();
 
-            //Attempt to get the last sql insert id
-            QSqlQuery * get_last_id = new QSqlQuery("SELECT last_insert_rowid();", identity_ring.database_handle);
-            while(get_last_id->next()){
-                qDebug() << "Next";
-                //Set last insert id
-                QString tmp_id = get_last_id->value(0).toString();
-                qDebug() << "next1";
-                last_generated_identity_sql_id = &tmp_id;
-                qDebug() << "INSERTED AT " << tmp_id;
+            if(append_identity->exec()){
+                qDebug() << "EXECUTING";
+                //Attempt to get the last sql insert id
+                QVariant last_id_variant = append_identity->lastInsertId();
+                int last_id = last_id_variant.toInt();
+                last_generated_identity_sql_id = last_id;
+                qDebug() << "INSERTED INTO :" << last_generated_identity_sql_id;
+
+            }else{
+                qDebug() << "Failed to insert";
             }
         }else{
             qDebug() << "Failed to open";

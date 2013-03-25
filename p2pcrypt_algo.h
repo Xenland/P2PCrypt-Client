@@ -5,6 +5,9 @@
 #include <QDebug>
 #include <QtCore>
 #include <QFuture>
+#include <QSql>
+#include <QtSql/QtSql>
+#include <QVariant>
 
 //OpenSSL
 #include <openssl/pem.h>
@@ -23,8 +26,7 @@ public:
     void generateNewIdentity(QString identity_algo_type, int keybit);
 
 private:
-    QString * last_generated_identity_sql_id;
-
+    int last_generated_identity_sql_id;
     QString * generated_public_key;
     QString * generated_private_key;
 
