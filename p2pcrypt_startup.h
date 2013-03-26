@@ -45,8 +45,6 @@ private slots:
     void generate_new_identity();
 
 private:
-    int last_generated_identity_id; //Set to last generated identity inserted into SQL - id; if an identity was recently generated, if not is less than 1
-
     p2pcrypt_algo * generate_identity_object;
     QFuture<void> generate_identity_future;
     QFutureWatcher<void> generate_identity_future_watcher;

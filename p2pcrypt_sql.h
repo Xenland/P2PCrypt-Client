@@ -12,7 +12,7 @@ public:
     QSqlDatabase database_handle;
 
     explicit p2pcrypt_sql(QObject *parent = 0);
-    void connectToDatabase(QString sql_filename);
+    void connectToDatabase(QString sql_filename, QString connection_name);
 
 
 signals:

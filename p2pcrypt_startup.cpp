@@ -244,7 +244,6 @@ void p2pcrypt_startup::generateNewIdentityThread(QString algo_type, int keybit){
     p2pcrypt_algo * algo_object = new p2pcrypt_algo;
     algo_object->generateNewIdentity(algo_type, keybit);
     showGenerateIdentityFinished(algo_object->getLastGeneratedIdValue());
-
 }
 
 
@@ -257,10 +256,39 @@ void p2pcrypt_startup::showGenerateIdentityFinished(int generated_sql_id){
     //Hide all screens
     hideAllBootScreens();
 
+    //Enforce variable limits
+    if(generated_sql_id < 1){
+        generated_sql_id = 0;
+    }
+
     //Display information on the identity just created
         //Query SQL for the information on the identity just created
-    generating_identity_finished_information_label->setText(QString::number(generated_sql_id));
-    generating_identity_finished_widget->show();
+        p2pcrypt_sql * identity_ring = new p2pcrypt_sql;
+        identity_ring->connectToDatabase("identity_keyring.sqlite3", "select_recently_generated_identity");
+        if(identity_ring->database_handle.open()){
+            qDebug() << "opened keyring (2)";
+
+            //Attempt to select identity information recently created
+            QString generated_id_string = QString::number(generated_sql_id);
+            QString select_identity_sql_string = QString("SELECT `public_key` FROM `local_identities` WHERE `id` = %1 LIMIT 0,1").arg(generated_id_string);
+            qDebug() << select_identity_sql_string;
+            QSqlQuery select_identity = QSqlQuery(select_identity_sql_string, identity_ring->database_handle);
+
+            if(select_identity.exec()){
+                qDebug() << "EXECUTED(2)";
+                qDebug() << select_identity.lastError();
+                while(select_identity.next()){
+                    qDebug() << "EXEC2-next";
+                    QString public_key_plain_text = select_identity.value(0).toString();
+                    qDebug() << public_key_plain_text;
+                }
+            }
+        }else{
+            qDebug() << "failed to open keyring";
+        }
+
+        //Now display
+        generating_identity_finished_widget->show();
 
     qDebug() << "showgenerate identity finished";
 }
