@@ -24,11 +24,10 @@ class p2pcrypt_algo : public QObject
 public:
     explicit p2pcrypt_algo(QObject *parent = 0);
     void generateNewIdentity(QString identity_algo_type, int keybit);
+    int getLastGeneratedIdValue();
 
 private:
     int last_generated_identity_sql_id;
-    QString * generated_public_key;
-    QString * generated_private_key;
 
 signals:
     

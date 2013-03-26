@@ -79,3 +79,14 @@ void p2pcrypt_algo::generateNewIdentity(QString identity_algo_type, int keybit){
 
     }
 }
+
+int p2pcrypt_algo::getLastGeneratedIdValue(){
+    int lastIdValue = 0;
+
+    //Is initialized and set
+    if(last_generated_identity_sql_id > 0){
+        lastIdValue = last_generated_identity_sql_id;
+    }
+
+    return lastIdValue;
+}

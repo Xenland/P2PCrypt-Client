@@ -7,8 +7,6 @@ p2pcrypt_startup::p2pcrypt_startup(QObject *parent) :
     QObject(parent)
 {
     qDebug() << "startup\n";
-
-    connect(&generate_identity_future_watcher, SIGNAL(finished()), SLOT(showGenerateIdentityFinished()));
 }
 
 
@@ -161,6 +159,7 @@ void p2pcrypt_startup::loadBootScreen(){
         //Begin adding objects to the generating_identity_finished_layout_contents
             //Add text about keypair information
             generating_identity_finished_information_label = new QLabel("");
+            generating_identity_finished_information_label->setText("TESTING");
             generating_identity_finished_layout_contents->addWidget(generating_identity_finished_information_label);
 }
 
@@ -234,26 +233,34 @@ void p2pcrypt_startup::generate_new_identity(){
 }
 
 
+/**
+ * Used to generate a new identity in the gui "generate identity" menu
+ * @brief p2pcrypt_startup::generateNewIdentityThread
+ * @param algo_type
+ * @param keybit
+ */
 void p2pcrypt_startup::generateNewIdentityThread(QString algo_type, int keybit){
-    qDebug() << "THREAD";
-
     //Create the "Algo" object so we can generate a new address.
     p2pcrypt_algo * algo_object = new p2pcrypt_algo;
     algo_object->generateNewIdentity(algo_type, keybit);
+    showGenerateIdentityFinished(algo_object->getLastGeneratedIdValue());
 
-    qDebug() << "END THREAD";
 }
 
 
 /**
  * @brief p2pcrypt_startup::showGenerateIdentityFinished
  */
-void p2pcrypt_startup::showGenerateIdentityFinished(){
+void p2pcrypt_startup::showGenerateIdentityFinished(int generated_sql_id){
     qDebug() << "generate identity finished";
 
     //Hide all screens
     hideAllBootScreens();
 
     //Display information on the identity just created
+        //Query SQL for the information on the identity just created
+    generating_identity_finished_information_label->setText(QString::number(generated_sql_id));
+    generating_identity_finished_widget->show();
+
     qDebug() << "showgenerate identity finished";
 }
