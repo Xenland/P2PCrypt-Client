@@ -15,6 +15,7 @@
 #include <QtCore>
 #include <QFuture>
 #include <QtConcurrentRun>
+#include <QCryptographicHash>
 
 #include "p2pcrypt_startup.h"
 #include "p2pcrypt_algo.h"
@@ -38,7 +39,7 @@ private slots:
 
     /* General GUI Slots */
     void showGenerateIdentity();
-    void showGenerateIdentityFinished(int);
+    void showGenerateIdentityFinished();
 
     /* Backend Slots */
     void generateNewIdentityThread(QString algo_type, int keybit);
@@ -57,8 +58,13 @@ private:
             QComboBox * identity_pick_algo;
 
         QWidget * generating_identity_working_widget;
+
         QWidget * generating_identity_finished_widget;
+            QString * generating_identity_finished_information_string;
             QLabel * generating_identity_finished_information_label;
+
+            int last_generated_identity_id;
+
 
    /* General GUI Functions */
    void hideAllBootScreens();

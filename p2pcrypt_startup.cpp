@@ -7,6 +7,7 @@ p2pcrypt_startup::p2pcrypt_startup(QObject *parent) :
     QObject(parent)
 {
     qDebug() << "startup\n";
+
 }
 
 
@@ -159,7 +160,7 @@ void p2pcrypt_startup::loadBootScreen(){
         //Begin adding objects to the generating_identity_finished_layout_contents
             //Add text about keypair information
             generating_identity_finished_information_label = new QLabel("");
-            generating_identity_finished_information_label->setText("TESTING");
+            generating_identity_finished_information_label->setAlignment(Qt::AlignHCenter);
             generating_identity_finished_layout_contents->addWidget(generating_identity_finished_information_label);
 }
 
@@ -230,6 +231,7 @@ void p2pcrypt_startup::generate_new_identity(){
 
     generate_identity_future = QtConcurrent::run(this, &p2pcrypt_startup::generateNewIdentityThread, algo_type, keybit);
     generate_identity_future_watcher.setFuture(generate_identity_future);
+    connect(&generate_identity_future_watcher, SIGNAL(finished()), SLOT(showGenerateIdentityFinished()));
 }
 
 
@@ -243,20 +245,29 @@ void p2pcrypt_startup::generateNewIdentityThread(QString algo_type, int keybit){
     //Create the "Algo" object so we can generate a new address.
     p2pcrypt_algo * algo_object = new p2pcrypt_algo;
     algo_object->generateNewIdentity(algo_type, keybit);
-    showGenerateIdentityFinished(algo_object->getLastGeneratedIdValue());
+    last_generated_identity_id = algo_object->getLastGeneratedIdValue();
+
+    //showGenerateIdentityFinished(algo_object->getLastGeneratedIdValue());
 }
 
 
 /**
  * @brief p2pcrypt_startup::showGenerateIdentityFinished
  */
-void p2pcrypt_startup::showGenerateIdentityFinished(int generated_sql_id){
+void p2pcrypt_startup::showGenerateIdentityFinished(){
     qDebug() << "generate identity finished";
 
     //Hide all screens
     hideAllBootScreens();
 
+    //Local variables
+    QString * public_key_plain_text;
+
+    //Local Flags
+    int finished_success = 0; //if zero: Display a "failed to retrieve identity" info; if (1)one Display "identity information"
+
     //Enforce variable limits
+    int generated_sql_id = last_generated_identity_id;
     if(generated_sql_id < 1){
         generated_sql_id = 0;
     }
@@ -266,7 +277,6 @@ void p2pcrypt_startup::showGenerateIdentityFinished(int generated_sql_id){
         p2pcrypt_sql * identity_ring = new p2pcrypt_sql;
         identity_ring->connectToDatabase("identity_keyring.sqlite3", "select_recently_generated_identity");
         if(identity_ring->database_handle.open()){
-            qDebug() << "opened keyring (2)";
 
             //Attempt to select identity information recently created
             QString generated_id_string = QString::number(generated_sql_id);
@@ -275,20 +285,43 @@ void p2pcrypt_startup::showGenerateIdentityFinished(int generated_sql_id){
             QSqlQuery select_identity = QSqlQuery(select_identity_sql_string, identity_ring->database_handle);
 
             if(select_identity.exec()){
-                qDebug() << "EXECUTED(2)";
-                qDebug() << select_identity.lastError();
                 while(select_identity.next()){
-                    qDebug() << "EXEC2-next";
-                    QString public_key_plain_text = select_identity.value(0).toString();
-                    qDebug() << public_key_plain_text;
+                    finished_success = 1;
+                    public_key_plain_text = new QString(select_identity.value(0).toString());
                 }
             }
         }else{
             qDebug() << "failed to open keyring";
         }
 
-        //Now display
-        generating_identity_finished_widget->show();
+        //Now display failed or success message
+        if(finished_success == 1){
+            //Strip newlines/return carriages from identity
+            public_key_plain_text->simplified();
+
+                //Convert simpilifed identity into a "handle" (sha256) -> (md5)
+                QCryptographicHash * sha256_handle = new QCryptographicHash(QCryptographicHash::Sha256);
+                sha256_handle->addData((const char *)public_key_plain_text, public_key_plain_text->size());
+
+                    //Convert Sha256 handle to a shorter Md5 handle
+                    QCryptographicHash * md5_handle = new QCryptographicHash(QCryptographicHash::Md5);
+                    md5_handle->addData((const char*) sha256_handle->result().toHex(), sha256_handle->result().toHex().size());
+                    qDebug() << md5_handle->result().toHex();
+
+
+                    //Set the md5 handle into the "finished" page
+                    QString generating_identity_finished_information_string = QString("Your identity information<br/> %1 ").arg(QString(md5_handle->result().toHex()));
+                    generating_identity_finished_information_label->setText(generating_identity_finished_information_string);
+
+            //We are ready to display the information we just compiled
+            generating_identity_finished_widget->show();
+
+        }else{
+            //Failed to get information display error/alert
+
+            //We are ready to display the information we just compiled
+            generating_identity_finished_widget->show();
+        }
 
     qDebug() << "showgenerate identity finished";
 }
