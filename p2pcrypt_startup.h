@@ -26,12 +26,15 @@ class p2pcrypt_startup : public QObject
     Q_OBJECT
 
 public:
-    p2pcrypt_startup(QObject *parent = 0);
+    p2pcrypt_startup();
     void setBootFrame(QFrame &boot_frame);
 
     /* Main Methods */
     void loadBootScreen();
     void showBootScreen();
+
+    /* Backend Functions */
+    void setMainWindow(QWidget * local_main_window);
 
 signals:
     
@@ -41,12 +44,15 @@ private slots:
     void showGenerateIdentity();
     void showGenerateIdentityFinished();
     void showBootScreen_slot();
+    void showSetPasswordIdentity_slot();
 
     /* Backend Slots */
     void generateNewIdentityThread(QString algo_type, int keybit);
     void generate_new_identity();
 
 private:
+    QWidget * main_window_handle; //Used for mostly controlling the main GUI window like resize,etc
+
     p2pcrypt_algo * generate_identity_object;
     QFuture<void> generate_identity_future;
     QFutureWatcher<void> generate_identity_future_watcher;
@@ -65,6 +71,8 @@ private:
             QLabel * generating_identity_finished_information_label;
 
             int last_generated_identity_id;
+
+        QWidget * generating_identity_set_pass_widget;
 
 
    /* General GUI Functions */

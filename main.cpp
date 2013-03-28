@@ -32,17 +32,18 @@ int main(int argc, char *argv[])
      *************************/
 
     //QT requires a qwidget centeral window or no windows will show so we use the main window as a place holder.
-    QWidget main_window;
-    main_window.setLayout(main_window_layout);
-    main_window.setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    main_window.setWindowTitle("P2P Crypt Client | "+current_version);
-    main_window.setMinimumSize(400, 200);
-    main_window.resize(400,200);
-    main_window.show();
+    QWidget * main_window = new QWidget;
+    main_window->setLayout(main_window_layout);
+    main_window->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    main_window->setWindowTitle("P2P Crypt Client | "+current_version);
+    main_window->setMinimumSize(400, 200);
+    main_window->resize(400,200);
+    main_window->show();
 
     /** Define the boot/startup frame **/
     boot_frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     p2pcrypt_startup * startup = new p2pcrypt_startup();
+    startup->setMainWindow(main_window);
     startup->setBootFrame(*boot_frame);
     startup->loadBootScreen();
 

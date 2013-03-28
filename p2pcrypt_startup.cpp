@@ -3,8 +3,7 @@
 /*
  *  Initializers
  */
-p2pcrypt_startup::p2pcrypt_startup(QObject *parent) :
-    QObject(parent)
+p2pcrypt_startup::p2pcrypt_startup() : QObject()
 {
     qDebug() << "startup\n";
 
@@ -181,6 +180,7 @@ void p2pcrypt_startup::loadBootScreen(){
                             //Attach password to this identityu button
                             QPushButton * generating_identity_finished_lock_with_pass = new QPushButton("Set Password for new Identity");
                             generating_identity_finished_vbox_buttons->addWidget(generating_identity_finished_lock_with_pass);
+                            connect(generating_identity_finished_lock_with_pass, SIGNAL(clicked()), SLOT(showSetPasswordIdentity_slot()));
 
                             //Connect to network with identity
                             QPushButton * generating_identity_finished_continue = new QPushButton("Connect to P2P Network");
@@ -188,6 +188,13 @@ void p2pcrypt_startup::loadBootScreen(){
 
                 //Attach to gen identity finished layout
                 generating_identity_finished_layout_contents->addWidget(generating_identity_finished_vbox_widget_buttons);
+
+    //Create a "Set password to identity" window to show the operator that they can set the password to an identity
+    generating_identity_set_pass_widget = new QWidget();
+    generating_identity_set_pass_widget->hide();
+
+        //Add this generating_identity_set_pass_widget to generate identity layout
+        generate_identity_layout->addWidget(generating_identity_set_pass_widget);
 }
 
 void p2pcrypt_startup::hideAllBootScreens(){
@@ -197,6 +204,7 @@ void p2pcrypt_startup::hideAllBootScreens(){
     generate_identity_widget->hide();
     generating_identity_working_widget->hide();
     generating_identity_finished_widget->hide();
+    generating_identity_set_pass_widget->hide();
 }
 
 /**
@@ -210,11 +218,23 @@ void p2pcrypt_startup::showBootScreen(){
 
         //Display boot screen from startup frame
         main_boot_widget->show();
+
+        //Resize panel
+        main_window_handle->resize(400, 250);
 }
 
 void p2pcrypt_startup::showBootScreen_slot(){
+    //Hide all screens
     hideAllBootScreens();
+
+    //Show boot screen
     showBootScreen();
+}
+
+void p2pcrypt_startup::showSetPasswordIdentity_slot(){
+    hideAllBootScreens();
+
+
 }
 
 
@@ -354,4 +374,16 @@ void p2pcrypt_startup::showGenerateIdentityFinished(){
         }
 
     qDebug() << "showgenerate identity finished";
+}
+
+
+/* =========== BACK END FUNCTIONS ============ */
+/**
+ * @brief p2pcrypt_startup::setMainWindow
+ * @param local_main_window
+ * @info " Sets the private main_window_handle so we can resize the window at will"
+ */
+void p2pcrypt_startup::setMainWindow(QWidget * local_main_window){
+    //Set private main window
+    main_window_handle = local_main_window;
 }
