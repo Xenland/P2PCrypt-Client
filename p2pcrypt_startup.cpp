@@ -161,7 +161,33 @@ void p2pcrypt_startup::loadBootScreen(){
             //Add text about keypair information
             generating_identity_finished_information_label = new QLabel("");
             generating_identity_finished_information_label->setAlignment(Qt::AlignHCenter);
+            generating_identity_finished_information_label->setTextInteractionFlags(Qt::TextSelectableByMouse);
             generating_identity_finished_layout_contents->addWidget(generating_identity_finished_information_label);
+
+            //Create HBox to hold group of buttons
+                //Create widget to house layout which the widge twill be added to layout contents
+                QWidget * generating_identity_finished_vbox_widget_buttons = new QWidget;
+
+                    //Attach new horizonal layout to the widget for grouping buttons
+                    QVBoxLayout * generating_identity_finished_vbox_buttons = new QVBoxLayout;
+                    generating_identity_finished_vbox_widget_buttons->setLayout(generating_identity_finished_vbox_buttons);
+
+                        //Add buttons to layout
+                            //Back to main menu button
+                            QPushButton * generating_identity_finished_goback = new QPushButton("<= Back to Main Menu");
+                            generating_identity_finished_vbox_buttons->addWidget(generating_identity_finished_goback);
+                            connect(generating_identity_finished_goback, SIGNAL(clicked()), SLOT(showBootScreen_slot()));
+
+                            //Attach password to this identityu button
+                            QPushButton * generating_identity_finished_lock_with_pass = new QPushButton("Set Password for new Identity");
+                            generating_identity_finished_vbox_buttons->addWidget(generating_identity_finished_lock_with_pass);
+
+                            //Connect to network with identity
+                            QPushButton * generating_identity_finished_continue = new QPushButton("Connect to P2P Network");
+                            generating_identity_finished_vbox_buttons->addWidget(generating_identity_finished_continue);
+
+                //Attach to gen identity finished layout
+                generating_identity_finished_layout_contents->addWidget(generating_identity_finished_vbox_widget_buttons);
 }
 
 void p2pcrypt_startup::hideAllBootScreens(){
@@ -170,6 +196,7 @@ void p2pcrypt_startup::hideAllBootScreens(){
     main_boot_widget->hide();
     generate_identity_widget->hide();
     generating_identity_working_widget->hide();
+    generating_identity_finished_widget->hide();
 }
 
 /**
@@ -183,6 +210,11 @@ void p2pcrypt_startup::showBootScreen(){
 
         //Display boot screen from startup frame
         main_boot_widget->show();
+}
+
+void p2pcrypt_startup::showBootScreen_slot(){
+    hideAllBootScreens();
+    showBootScreen();
 }
 
 
@@ -246,8 +278,6 @@ void p2pcrypt_startup::generateNewIdentityThread(QString algo_type, int keybit){
     p2pcrypt_algo * algo_object = new p2pcrypt_algo;
     algo_object->generateNewIdentity(algo_type, keybit);
     last_generated_identity_id = algo_object->getLastGeneratedIdValue();
-
-    //showGenerateIdentityFinished(algo_object->getLastGeneratedIdValue());
 }
 
 
@@ -299,18 +329,18 @@ void p2pcrypt_startup::showGenerateIdentityFinished(){
             //Strip newlines/return carriages from identity
             public_key_plain_text->simplified();
 
-                //Convert simpilifed identity into a "handle" (sha256) -> (md5)
-                QCryptographicHash * sha256_handle = new QCryptographicHash(QCryptographicHash::Sha256);
-                sha256_handle->addData((const char *)public_key_plain_text, public_key_plain_text->size());
+                //Convert simpilifed identity into a "handle" (Sha512) -> (md5)
+                QCryptographicHash * sha512_handle = new QCryptographicHash(QCryptographicHash::Sha512);
+                sha512_handle->addData((const char *)public_key_plain_text, public_key_plain_text->size());
 
-                    //Convert Sha256 handle to a shorter Md5 handle
+                    //Convert Sha512 handle to a shorter Md5 handle
                     QCryptographicHash * md5_handle = new QCryptographicHash(QCryptographicHash::Md5);
-                    md5_handle->addData((const char*) sha256_handle->result().toHex(), sha256_handle->result().toHex().size());
+                    md5_handle->addData((const char*) sha512_handle->result().toHex(), sha512_handle->result().toHex().size());
                     qDebug() << md5_handle->result().toHex();
 
 
                     //Set the md5 handle into the "finished" page
-                    QString generating_identity_finished_information_string = QString("Your identity information<br/> %1 ").arg(QString(md5_handle->result().toHex()));
+                    QString generating_identity_finished_information_string = QString("Your identity information<br/><br/> <b>%1</b> <br/><br/> What would you like to do next? ").arg(QString(md5_handle->result().toHex()));
                     generating_identity_finished_information_label->setText(generating_identity_finished_information_string);
 
             //We are ready to display the information we just compiled

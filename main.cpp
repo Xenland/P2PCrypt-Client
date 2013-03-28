@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     //QT requires a qwidget centeral window or no windows will show so we use the main window as a place holder.
     QWidget main_window;
     main_window.setLayout(main_window_layout);
+    main_window.setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     main_window.setWindowTitle("P2P Crypt Client | "+current_version);
     main_window.setMinimumSize(400, 200);
     main_window.resize(400,200);

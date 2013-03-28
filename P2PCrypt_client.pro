@@ -26,3 +26,6 @@ HEADERS  += \
 
 LIBS += -lssl
 LIBS += -lcrypto
+
+OTHER_FILES += \
+    README.md

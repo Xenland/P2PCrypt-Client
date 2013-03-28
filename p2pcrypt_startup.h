@@ -40,6 +40,7 @@ private slots:
     /* General GUI Slots */
     void showGenerateIdentity();
     void showGenerateIdentityFinished();
+    void showBootScreen_slot();
 
     /* Backend Slots */
     void generateNewIdentityThread(QString algo_type, int keybit);
