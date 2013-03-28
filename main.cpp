@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
 
     //Define Main() Variables
-    current_version = QString("Dev Build v0.0.3");
+    current_version = QString("(Dev Build) v0.0.4");
     QHBoxLayout * main_window_layout = new QHBoxLayout;
     QFrame * boot_frame = new QFrame;
 
@@ -35,9 +35,9 @@ int main(int argc, char *argv[])
     QWidget * main_window = new QWidget;
     main_window->setLayout(main_window_layout);
     main_window->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    main_window->setWindowTitle("P2P Crypt Client | "+current_version);
-    main_window->setMinimumSize(400, 200);
-    main_window->resize(400,200);
+    main_window->setWindowTitle("P2P Crypt Client "+current_version);
+    main_window->setMinimumSize(400, 300);
+    main_window->resize(400,300);
     main_window->show();
 
     /** Define the boot/startup frame **/

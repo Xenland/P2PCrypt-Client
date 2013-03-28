@@ -195,6 +195,54 @@ void p2pcrypt_startup::loadBootScreen(){
 
         //Add this generating_identity_set_pass_widget to generate identity layout
         generate_identity_layout->addWidget(generating_identity_set_pass_widget);
+
+        //Create layout to hold "multiple QT objects to store in the generate_identity_widget
+        QVBoxLayout * generating_identity_set_pass_widget_layout_contents = new QVBoxLayout;
+
+            //Attach this layout the the "generating_identity_set_pass_widget"
+            generating_identity_set_pass_widget->setLayout(generating_identity_set_pass_widget_layout_contents);
+
+        //Begin adding objects to the generating_identity_set_pass_widget_layout_contents
+            //Add text instructing the user to set a password
+            QLabel * generating_identity_setpass_information_label = new QLabel("Choose your password format then set your password.");
+            generating_identity_setpass_information_label->setAlignment(Qt::AlignHCenter);
+            generating_identity_set_pass_widget_layout_contents->addWidget(generating_identity_setpass_information_label);
+
+            //Lists of passwords for locking a identity
+            identity_pick_passformat = new QComboBox;
+            identity_pick_passformat->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+                //Add data to combo box
+                identity_pick_passformat->addItem("AES256/SHA256");
+
+                //Attach this widget to the "set pass" layout
+                generating_identity_set_pass_widget_layout_contents->addWidget(identity_pick_passformat);
+
+            //Add "input box" for the operator to input their desired password
+                QLineEdit * generating_identity_set_pass_lineedit = new QLineEdit;
+
+                    //Attach this widget to the "set pass" layout
+                    generating_identity_set_pass_widget_layout_contents->addWidget(generating_identity_set_pass_lineedit);
+
+            //Add button to trigger "set password" operations
+                QPushButton * generating_identity_setpass_setpass_bttn = new QPushButton("Lock with password");
+
+                    //Attach this widget to the "set pass" layout
+                    generating_identity_set_pass_widget_layout_contents->addWidget(generating_identity_setpass_setpass_bttn);
+
+            //Add button to trigger "connect to network"
+                QPushButton * generating_identity_setpass_connectnet_bttn = new QPushButton("Connect to Network");
+
+                    //Attach this widget to the "set pass" layout
+                    generating_identity_set_pass_widget_layout_contents->addWidget(generating_identity_setpass_connectnet_bttn);
+
+
+            //Add button to trigger "back to main menu button"
+                QPushButton * generating_identity_setpass_back_mainmenu_bttn = new QPushButton("<= Back to main menu");
+
+                    //Attach this widget to the "set pass" layout
+                    generating_identity_set_pass_widget_layout_contents->addWidget(generating_identity_setpass_back_mainmenu_bttn);
+
 }
 
 void p2pcrypt_startup::hideAllBootScreens(){
@@ -232,9 +280,14 @@ void p2pcrypt_startup::showBootScreen_slot(){
 }
 
 void p2pcrypt_startup::showSetPasswordIdentity_slot(){
+    //Hide all screens
     hideAllBootScreens();
 
+    //Show "set password" screen
+    generating_identity_set_pass_widget->show();
 
+    //Resize panel
+    main_window_handle->resize(400, 300);
 }
 
 

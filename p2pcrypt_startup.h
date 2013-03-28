@@ -16,6 +16,7 @@
 #include <QFuture>
 #include <QtConcurrentRun>
 #include <QCryptographicHash>
+#include <QLineEdit>
 
 #include "p2pcrypt_startup.h"
 #include "p2pcrypt_algo.h"
@@ -73,6 +74,8 @@ private:
             int last_generated_identity_id;
 
         QWidget * generating_identity_set_pass_widget;
+
+            QComboBox * identity_pick_passformat;
 
 
    /* General GUI Functions */
