@@ -75,7 +75,7 @@ private:
             QLabel * generating_identity_finished_information_label;
 
         QWidget * generating_identity_set_pass_widget;
-
+            QLineEdit * generating_identity_set_pass_lineedit;
             QComboBox * identity_pick_passformat;
 
 

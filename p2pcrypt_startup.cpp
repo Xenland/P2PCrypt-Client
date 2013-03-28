@@ -219,7 +219,7 @@ void p2pcrypt_startup::loadBootScreen(){
                 generating_identity_set_pass_widget_layout_contents->addWidget(identity_pick_passformat);
 
             //Add "input box" for the operator to input their desired password
-                QLineEdit * generating_identity_set_pass_lineedit = new QLineEdit;
+                generating_identity_set_pass_lineedit = new QLineEdit;
 
                     //Attach this widget to the "set pass" layout
                     generating_identity_set_pass_widget_layout_contents->addWidget(generating_identity_set_pass_lineedit);
@@ -444,7 +444,7 @@ void p2pcrypt_startup::lockIdentityWithPassword_slot(){
 
     //Create a new "algo" object and encrypt/lock identity
     p2pcrypt_algo lock_identity_handle;
-    lock_identity_handle.lockIdentity(1, "AES256/SHA256", "password");
+    lock_identity_handle.lockIdentity(currently_selected_identity_sql_id, "AES256/SHA256", generating_identity_set_pass_lineedit->text());
 }
 
 /* =========== BACK END FUNCTIONS ============ */
