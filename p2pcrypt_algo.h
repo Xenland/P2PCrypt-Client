@@ -14,6 +14,7 @@
 #include <openssl/evp.h>
 #include <openssl/rsa.h>
 
+
 //p2pcrypt
 #include "p2pcrypt_sql.h"
 
@@ -25,6 +26,8 @@ public:
     explicit p2pcrypt_algo(QObject *parent = 0);
     void generateNewIdentity(QString identity_algo_type, int keybit);
     int getLastGeneratedIdValue();
+
+    void lockIdentity(int identity_sql_id, QString encrypt_lock_type, QString password);
 
 private:
     int last_generated_identity_sql_id;

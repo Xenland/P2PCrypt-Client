@@ -172,11 +172,6 @@ void p2pcrypt_startup::loadBootScreen(){
                     generating_identity_finished_vbox_widget_buttons->setLayout(generating_identity_finished_vbox_buttons);
 
                         //Add buttons to layout
-                            //Back to main menu button
-                            QPushButton * generating_identity_finished_goback = new QPushButton("<= Back to Main Menu");
-                            generating_identity_finished_vbox_buttons->addWidget(generating_identity_finished_goback);
-                            connect(generating_identity_finished_goback, SIGNAL(clicked()), SLOT(showBootScreen_slot()));
-
                             //Attach password to this identityu button
                             QPushButton * generating_identity_finished_lock_with_pass = new QPushButton("Set Password for new Identity");
                             generating_identity_finished_vbox_buttons->addWidget(generating_identity_finished_lock_with_pass);
@@ -185,6 +180,11 @@ void p2pcrypt_startup::loadBootScreen(){
                             //Connect to network with identity
                             QPushButton * generating_identity_finished_continue = new QPushButton("Connect to P2P Network");
                             generating_identity_finished_vbox_buttons->addWidget(generating_identity_finished_continue);
+
+                            //Back to main menu button
+                            QPushButton * generating_identity_finished_goback = new QPushButton("Back to Main Menu");
+                            generating_identity_finished_vbox_buttons->addWidget(generating_identity_finished_goback);
+                            connect(generating_identity_finished_goback, SIGNAL(clicked()), SLOT(showBootScreen_slot()));
 
                 //Attach to gen identity finished layout
                 generating_identity_finished_layout_contents->addWidget(generating_identity_finished_vbox_widget_buttons);
@@ -226,19 +226,23 @@ void p2pcrypt_startup::loadBootScreen(){
 
             //Add button to trigger "set password" operations
                 QPushButton * generating_identity_setpass_setpass_bttn = new QPushButton("Lock with password");
+                    //Add connection
+                    connect(generating_identity_setpass_setpass_bttn, SIGNAL(clicked()), SLOT(lockIdentityWithPassword_slot()));
 
                     //Attach this widget to the "set pass" layout
                     generating_identity_set_pass_widget_layout_contents->addWidget(generating_identity_setpass_setpass_bttn);
 
+
             //Add button to trigger "connect to network"
-                QPushButton * generating_identity_setpass_connectnet_bttn = new QPushButton("Connect to Network");
+                QPushButton * generating_identity_setpass_connectnet_bttn = new QPushButton("Connect to P2P Network");
 
                     //Attach this widget to the "set pass" layout
                     generating_identity_set_pass_widget_layout_contents->addWidget(generating_identity_setpass_connectnet_bttn);
 
 
             //Add button to trigger "back to main menu button"
-                QPushButton * generating_identity_setpass_back_mainmenu_bttn = new QPushButton("<= Back to main menu");
+                QPushButton * generating_identity_setpass_back_mainmenu_bttn = new QPushButton("Back to main menu");
+                connect(generating_identity_setpass_back_mainmenu_bttn, SIGNAL(clicked()), SLOT(showBootScreen_slot()));
 
                     //Attach this widget to the "set pass" layout
                     generating_identity_set_pass_widget_layout_contents->addWidget(generating_identity_setpass_back_mainmenu_bttn);
@@ -271,6 +275,10 @@ void p2pcrypt_startup::showBootScreen(){
         main_window_handle->resize(400, 250);
 }
 
+/**
+ * @brief p2pcrypt_startup::showBootScreen_slot
+ * @info Currently called from the "Back to main menu" slots
+ **/
 void p2pcrypt_startup::showBootScreen_slot(){
     //Hide all screens
     hideAllBootScreens();
@@ -350,7 +358,9 @@ void p2pcrypt_startup::generateNewIdentityThread(QString algo_type, int keybit){
     //Create the "Algo" object so we can generate a new address.
     p2pcrypt_algo * algo_object = new p2pcrypt_algo;
     algo_object->generateNewIdentity(algo_type, keybit);
-    last_generated_identity_id = algo_object->getLastGeneratedIdValue();
+
+    /** Set the "currently selected identity id" **/
+    currently_selected_identity_sql_id = algo_object->getLastGeneratedIdValue();
 }
 
 
@@ -370,7 +380,7 @@ void p2pcrypt_startup::showGenerateIdentityFinished(){
     int finished_success = 0; //if zero: Display a "failed to retrieve identity" info; if (1)one Display "identity information"
 
     //Enforce variable limits
-    int generated_sql_id = last_generated_identity_id;
+    int generated_sql_id = currently_selected_identity_sql_id;
     if(generated_sql_id < 1){
         generated_sql_id = 0;
     }
@@ -429,6 +439,13 @@ void p2pcrypt_startup::showGenerateIdentityFinished(){
     qDebug() << "showgenerate identity finished";
 }
 
+void p2pcrypt_startup::lockIdentityWithPassword_slot(){
+    qDebug() << "LOCKING WITH THE SET PASSWORD";
+
+    //Create a new "algo" object and encrypt/lock identity
+    p2pcrypt_algo lock_identity_handle;
+    lock_identity_handle.lockIdentity(1, "AES256/SHA256", "password");
+}
 
 /* =========== BACK END FUNCTIONS ============ */
 /**
