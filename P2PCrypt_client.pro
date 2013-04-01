@@ -12,7 +12,7 @@ TARGET = P2PCrypt_client
 TEMPLATE = app
 
 #Remeber to change this per computer and version change
-DESTDIR = /home/qt_dev/p2pcrypt_client/v0.0.3/P2PCrypt_client/
+DESTDIR = /home/qt_dev/p2pcrypt_client/v0.0.4/P2PCrypt-Client/
 
 SOURCES += main.cpp \
     p2pcrypt_startup.cpp \

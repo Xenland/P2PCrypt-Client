@@ -1,0 +1,7 @@
+-- Describe LOCAL_IDENTITIES
+CREATE TABLE local_identities (
+    "id" INTEGER PRIMARY KEY,
+    "public_key" TEXT,
+    "private_key" TEXT,
+    "keysCurrentlyEncrypted" INTEGER
+)

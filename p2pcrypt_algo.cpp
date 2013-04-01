@@ -93,62 +93,98 @@ int p2pcrypt_algo::getLastGeneratedIdValue(){
 
 
 void p2pcrypt_algo::lockIdentity(int identity_sql_id, QString encrypt_lock_type, QString password_to_lock){
-     if(encrypt_lock_type == "AES256/SHA256"){
-        //Lock identity with AES256 and SHA256 the password
+     if(encrypt_lock_type == "AES | SHA256"){
+        //TEST AES-CTR
+            /** Set variables **/
+                //Track bytes read
+                int bytes_read = 0;
 
-            //Generate a Key and IV for the AES256 password
-            const EVP_CIPHER *cipher;
-            const EVP_MD *dgst = NULL;
-            unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
-            const char *password = (const char *) password_to_lock.toStdString().c_str();
+                //encrypt/decrypt vars
+                unsigned char * indata;
+                unsigned char * outdata;
 
-            const unsigned char *salt = NULL;
-            int i;
+                //IV
+                unsigned char iv[AES_BLOCK_SIZE];
 
-            OpenSSL_add_all_algorithms();
+                //AES: key format
+                AES_KEY key;
 
-            cipher = EVP_get_cipherbyname("aes-256-cbc");
-            if(!cipher) {
-                qDebug() << "Cipher not found and/or not supported";
+                //Encrytion Key
+                const unsigned char * enc_key;
+                    //Set encryption key
+                    enc_key = (unsigned const char*)"1234567812345678"; //Set encryption key
+
+            /** Collect random bytes **/
+            if(!RAND_bytes(iv, AES_BLOCK_SIZE)){
+                //Collection of valid random bytes failed, return debug message
+                qDebug() << "Failed collect randomness, The universe must be in tune right now";
             }
 
-            dgst=EVP_get_digestbyname("md5"); //TO DO: CHANGE THIS TO SHA256 if possible....
-            if(!dgst) {
-                qDebug() << "Digest not found or not support";
-            }
-
-            if(!EVP_BytesToKey(cipher, dgst, salt,(unsigned char *) password,strlen(password), 1, key, iv))
+            /** allocate the password(enc_key) to an AES Key format(key)  **/
+            if(AES_set_encrypt_key(enc_key, 128, &key) < 0)
             {
-                qDebug() << "BYTES TO KEY FAILED";
-
+                qDebug() << "Set encryption key";
             }
 
-            EVP_CIPHER_CTX e_ctx, d_ctx;
-            EVP_CIPHER_CTX_init(&e_ctx);
-            EVP_EncryptInit_ex(&e_ctx, EVP_aes_256_cbc(), NULL, key, iv);
-            EVP_CIPHER_CTX_init(&d_ctx);
-            EVP_DecryptInit_ex(&d_ctx, EVP_aes_256_cbc(), NULL, key, iv);
 
-            //Begin Encrypt....
-            /* max ciphertext len for a n bytes of plaintext is n + AES_BLOCK_SIZE -1 bytes */
-            const char * plaintext = "HELLO WORLD";
-            int  len = sizeof(plaintext);
-            int c_len = len + 256, f_len = 0;
-            unsigned char *ciphertext = (unsigned char *)malloc(c_len);
+            /** Now we are booted,
+             *  initizalise the encryption stuff
+             **/
+            unsigned char ivec[AES_BLOCK_SIZE];
+            unsigned int num;
+            unsigned char ecount[AES_BLOCK_SIZE];
 
-            /* allows reusing of 'e' for multiple encryption cycles */
-            EVP_EncryptInit_ex(&e_ctx, NULL, NULL, NULL, NULL);
+            num = 0;
+            memset(ecount, 0, AES_BLOCK_SIZE);
 
-            /* update ciphertext, c_len is filled with the length of ciphertext generated,
-            *len is the size of plaintext in bytes */
-            EVP_EncryptUpdate(&e_ctx, ciphertext, &c_len, (const unsigned char *)plaintext, len);
+            /* Initialise counter in 'ivec' to 0 */
+            memset(ivec + 8, 0, 8);
 
-            /* update ciphertext with the final remaining bytes */
-            EVP_EncryptFinal_ex(&e_ctx, ciphertext+c_len, &f_len);
+            /* Copy IV into 'ivec' */
+            memcpy(ivec, iv, 8);
 
-            len = c_len + f_len;
+                /** ENCRYPT
+                        ((Yes we could be using a pointer below))
+                **/
+                int keep_encrypting = 1;
+                int tracker_start = 0;
 
-            QByteArray cipher_text_string_base64 = QByteArray((const char *)ciphertext);
-            qDebug () << cipher_text_string_base64.toBase64();
+                QString plaintext_to_encrypt = "This is a very long long long long long string";
+                QString encrypted_plaintext_as_bytes;
+                while(keep_encrypting == 1){
+                    //Check if we should continue encryption proccesses.
+                    if((tracker_start + AES_BLOCK_SIZE) >= plaintext_to_encrypt.length()){
+                        //Stop keep encrypting proccess.
+                        keep_encrypting = 0;
+                    }
+
+                    //Convert QString(plaintext) to unsigned char (plaintext)
+                    QString subString_of_plaintext = plaintext_to_encrypt.mid(tracker_start,AES_BLOCK_SIZE);
+                    QByteArray subString_of_plaintext_bytearray = subString_of_plaintext.toLocal8Bit();
+                    const char * subString_of_plaintext_char = subString_of_plaintext_bytearray.data();
+                    unsigned char * subString_of_plaintext_unsignedChar;
+                    subString_of_plaintext_unsignedChar = (unsigned char*)subString_of_plaintext_char;
+
+                    //Set the next block to encrypt
+                    indata = subString_of_plaintext_unsignedChar;
+
+                    //Generate next AES encrypted block
+                    AES_ctr128_encrypt(indata,
+                                       outdata,
+                                       bytes_read,
+                                       &key,
+                                       ivec,
+                                       ecount,
+                                       &num);
+
+
+                    encrypted_plaintext_as_bytes.append(QString::fromLocal8Bit((char*)outdata));
+
+                    //Increment tracker
+                    tracker_start = tracker_start + AES_BLOCK_SIZE;
+
+                }
+
+                qDebug() << encrypted_plaintext_as_bytes;
      }
  }

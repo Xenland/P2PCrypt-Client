@@ -213,7 +213,7 @@ void p2pcrypt_startup::loadBootScreen(){
             identity_pick_passformat->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
                 //Add data to combo box
-                identity_pick_passformat->addItem("AES256/SHA256");
+                identity_pick_passformat->addItem("AES | SHA256");
 
                 //Attach this widget to the "set pass" layout
                 generating_identity_set_pass_widget_layout_contents->addWidget(identity_pick_passformat);
@@ -444,8 +444,10 @@ void p2pcrypt_startup::lockIdentityWithPassword_slot(){
 
     //Create a new "algo" object and encrypt/lock identity
     p2pcrypt_algo lock_identity_handle;
-    lock_identity_handle.lockIdentity(currently_selected_identity_sql_id, "AES256/SHA256", generating_identity_set_pass_lineedit->text());
+    lock_identity_handle.lockIdentity(currently_selected_identity_sql_id, "AES | SHA256", generating_identity_set_pass_lineedit->text());
 }
+
+
 
 /* =========== BACK END FUNCTIONS ============ */
 /**

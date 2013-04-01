@@ -13,7 +13,14 @@
 #include <openssl/pem.h>
 #include <openssl/evp.h>
 #include <openssl/rsa.h>
+#include <openssl/des.h>
+#include <openssl/aes.h>
+#include <openssl/rand.h>
+#include <openssl/hmac.h>
+#include <openssl/buffer.h>
 
+//QtCrypto NOTE: (Contains just about everything OpenSSL has, Not sure which to choose at this point)
+#include <QtCrypto/QtCrypto>
 
 //p2pcrypt
 #include "p2pcrypt_sql.h"
