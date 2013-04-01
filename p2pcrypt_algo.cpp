@@ -149,7 +149,7 @@ void p2pcrypt_algo::lockIdentity(int identity_sql_id, QString encrypt_lock_type,
                 int keep_encrypting = 1;
                 int tracker_start = 0;
 
-                QString plaintext_to_encrypt = "This is a very long long long long long string";
+                QString plaintext_to_encrypt = "This is a very long long long long long string.";
                 QString encrypted_plaintext_as_bytes;
                 while(keep_encrypting == 1){
                     //Check if we should continue encryption proccesses.
@@ -169,22 +169,68 @@ void p2pcrypt_algo::lockIdentity(int identity_sql_id, QString encrypt_lock_type,
                     indata = subString_of_plaintext_unsignedChar;
 
                     //Generate next AES encrypted block
+                    AES_ctr128_encrypt(indata,outdata,bytes_read,&key,ivec,ecount,&num);
+
+                    QString tmp_string = QString::fromLocal8Bit((char*)outdata);
+                    encrypted_plaintext_as_bytes.append(tmp_string);
+
+                    //Increment tracker
+                    tracker_start = tracker_start + AES_BLOCK_SIZE;
+                }
+
+                //Turn encrypted bytes into base64
+                qDebug() << encrypted_plaintext_as_bytes;
+                QByteArray encyrypted_plaintext_as_base64 = QByteArray(encrypted_plaintext_as_bytes.toStdString().data());
+                qDebug() << "Encrypted Base64 text: " << encyrypted_plaintext_as_base64.toBase64();
+
+                /********* TEMPORARY CODE (FOR TESTING) **********/
+                /**** DECRYPT TESTING*****************************/
+
+                if (AES_set_encrypt_key(enc_key, 128, &key) < 0){
+                    qDebug() << "Setting of decryption key failed!";
+                }
+
+                num = 0;
+                memset(ecount, 0, AES_BLOCK_SIZE);
+
+                /* Initialise counter in 'ivec' to 0
+                memset(ivec + 8, 0, 8);
+
+                /* Copy IV into 'ivec'
+                memcpy(ivec, iv, 8);
+
+
+                QString decrypted_plaintext;
+
+                int keep_decrypting = 1;
+                tracker_start = 0;
+                while(keep_decrypting == 1){
+                    //Check if we should continue encryption proccesses.
+                    if((tracker_start + AES_BLOCK_SIZE) >= encrypted_plaintext_as_bytes.length()){
+                        //Stop keep encrypting proccess.
+                        keep_decrypting = 0;
+                    }
+
+                    //(Set direction of "DECRYPT")
                     AES_ctr128_encrypt(indata,
                                        outdata,
                                        bytes_read,
                                        &key,
-                                       ivec,
-                                       ecount,
-                                       &num);
+                                       ivec, ecount, &num);
 
+                    const char * decrypted_plaintext_constchar;
+                    decrypted_plaintext_constchar = (const char *) outdata;
+                    QByteArray decrypted_plaintext_bytearray = QByteArray(decrypted_plaintext_constchar);
+                    QString string = QString(decrypted_plaintext_bytearray);
 
-                    encrypted_plaintext_as_bytes.append(QString::fromLocal8Bit((char*)outdata));
+                    //Append decrypted block
+                    decrypted_plaintext.append(string);
+
 
                     //Increment tracker
                     tracker_start = tracker_start + AES_BLOCK_SIZE;
-
                 }
 
-                qDebug() << encrypted_plaintext_as_bytes;
+                qDebug() << decrypted_plaintext;*/
      }
  }
